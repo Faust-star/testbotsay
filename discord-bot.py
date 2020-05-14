@@ -663,3 +663,5 @@ async def status(ctx):
     print("1")
 
 token = os.environ.get("BOT_TOKEN")
+
+bot.run(str(token))
