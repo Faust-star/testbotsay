@@ -28,11 +28,11 @@ client = commands.Bot(command_prefix = PREFIX )
 client.remove_command( 'help' )
 
 
-@client.event
+@Bot.event
 async def on_ready():
     print('Bot is ready.')
 
-@client.command()
+@Bot.command()
 async def members_info(ctx):
     server_members = ctx.guild.members
     data = "\n".join([i.name for i in server_members])
@@ -40,7 +40,7 @@ async def members_info(ctx):
     await ctx.send(data)
 
 # калькулятор
-@client.command(aliases = ['count', 'calc', 'вычисли', 'math'])
+@Bot.command(aliases = ['count', 'calc', 'вычисли', 'math'])
 async def __count(ctx, *, args = None):
     text = ctx.message.content
 
@@ -50,7 +50,7 @@ async def __count(ctx, *, args = None):
         result = eval(args)
         await ctx.send(embed = discord.Embed(description = f'Evaluation result of `{args}`: \n`{result}`', color = 0x39d0d6))
 
-@client.event
+@Bot.event
 async def on_message(message):
 
     await client.process_commands(message)
@@ -60,7 +60,7 @@ async def on_message(message):
         await message.channel.send(embed = discord.Embed(description = f'{message.author}, реклама запрещена.',color=0x0c0c0c)) 
         return
 
-@client.event
+@Bot.event
 async def on_ready():
     print('client ready')
 
@@ -68,13 +68,13 @@ async def on_ready():
 def toggle_next():
     client.loop.call_soon_threadsafe(play_next_song.set)
 
-@client.command()
+@Bot.command()
 async def send(ctx, member: discord.Member, *, arg):
     await member.send(embed = discord.Embed(description = f'{arg}', color=0x0c0c0c)) 
     return
 
 #time
-@client.command()
+@Bot.command()
 async def time(ctx):
     emb = discord.Embed(colour= discord.Color.green(), url= 'https://www.timeserver.ru')
     
@@ -87,14 +87,14 @@ async def time(ctx):
 
     await ctx.send( embed = emb ) 
 
-@client.command()
+@Bot.command()
 @commands.has_permissions( administrator = True)
 async def say(ctx, *, arg):
 
     await ctx.message.delete()
     await ctx.send(embed = discord.Embed(description = f'{arg}', color=0x0c0c0c))
 
-@client.command()
+@Bot.command()
 async def ping(ctx):
     try:
         await ctx.message.delete()
@@ -106,7 +106,7 @@ async def ping(ctx):
     )
     await ctx.send(embed=emb)
 
-@client.event
+@Bot.event
 async def on_raw_reaction_add(payload):
     msgID = int(payload.message_id)
     if msgID == int(config.message_id):
@@ -117,7 +117,7 @@ async def on_raw_reaction_add(payload):
     else:
         pass
 
-@client.event
+@Bot.event
 async def on_ready(*args):
     type = discord.ActivityType.watching
     activity = discord.Activity(name = "за сервером", type = type)
@@ -125,7 +125,7 @@ async def on_ready(*args):
     await client.change_presence(activity = activity, status = status)
 
 # информация сервера
-@client.command()
+@Bot.command()
 async def serverinfo(ctx):
     members = ctx.guild.members
     online = len(list(filter(lambda x: x.status == discord.Status.online, members)))
@@ -159,7 +159,7 @@ async def serverinfo(ctx):
     await ctx.send(embed=embed)
 
 # удаление пользователя из сервера
-@client.command()
+@Bot.command()
 @commands.has_permissions( administrator = True) 
 async def kick(ctx,member: discord.Member = None, reason = None): 
 
@@ -184,7 +184,7 @@ async def kick(ctx,member: discord.Member = None, reason = None):
 
 # Бан    
 
-@client.command()
+@Bot.command()
 @commands.has_permissions( administrator = True) 
 async def ban(ctx,member: discord.Member = None, reason = None): 
 
@@ -205,7 +205,7 @@ async def ban(ctx,member: discord.Member = None, reason = None):
         await channel_log.send(embed = discord.Embed(description = f'**:shield: Пользователь {member.mention} был заблокирован.\n:book: По причине: {reason}**', color=0x0c0c0c)) 
 
 
-@client.command()
+@Bot.command()
 @commands.has_permissions( administrator = True )
 async def unban(ctx, *, member):
     banned_users = await ctx.guild.bans()
@@ -219,7 +219,7 @@ async def unban(ctx, *, member):
             await ctx.send(f'Unbanned {user.mention}')
             return
 
-@client.command()
+@Bot.command()
 @commands.has_permissions( administrator = True) 
 async def mute(ctx,member: discord.Member = None, reason = None): 
 
@@ -242,7 +242,7 @@ async def mute(ctx,member: discord.Member = None, reason = None):
 
 # Размут
 
-@client.command()
+@Bot.command()
 @commands.has_permissions( administrator = True) 
 async def unmute(ctx,member: discord.Member = None): 
 
@@ -274,7 +274,7 @@ async def mute_error(ctx, error):
         await ctx.send(embed = discord.Embed(description = f'**:exclamation: {ctx.author.name},у вас нет прав для использования данной команды.**', color=0x0c0c0c)) 
 
 # выдача роли при входе 
-@client.event
+@Bot.event
 async def on_member_join( member ):
     channel = client.get_channel(709743018617471026)
     role = discord.utils.get( member.guild.roles, id = 709838029677658192)
@@ -283,7 +283,7 @@ async def on_member_join( member ):
     await channel.send( embed = discord.Embed( description = f'Пользователь ``{ member.name }``, присоеденился к нам!', 
                           color = 0x0c0c0c ) )
 
-@client.command()
+@Bot.command()
 async def report(ctx,member: discord.Member = None,*,arg = None):
 
     channel = client.get_channel( 709696227780067479 ) #Айди канала жалоб
@@ -301,7 +301,7 @@ async def report(ctx,member: discord.Member = None,*,arg = None):
         await ctx.send(embed = discord.Embed(description =f'**:shield: На пользователя {member.mention} была отправлена жалоба.\n:bookmark_tabs: По причине: {arg}**', color=0x0c0c0c))
         await channel.send(embed = discord.Embed(description =f'**:shield: На пользователя {member.mention} была отправлена жалоба.\n:bookmark_tabs: По причине: {arg}\n:bust_in_silhouette: Автор жалобы: {ctx.author.mention}**', color=0x0c0c0c))
 
-@client.command()
+@Bot.command()
 @commands.has_permissions( administrator = True)
 async def clear(ctx,amount : int):
     
@@ -323,7 +323,7 @@ async def clear_error(ctx, error):
         await ctx.send(embed = discord.Embed(description = f'**:grey_exclamation: {ctx.author.name},обязательно укажите количевство сообщений.**', color=0x0c0c0c)) 
 
 # userinfo
-@client.command()
+@Bot.command()
 async def userinfo(ctx, Member: discord.Member = None ):
     if not Member:
         Member = ctx.author
@@ -343,7 +343,7 @@ async def userinfo(ctx, Member: discord.Member = None ):
     await ctx.send(embed=emb)
 
 # Command help
-@client.command( pass_context = True )
+@Bot.command( pass_context = True )
 @commands.has_permissions( administrator = True )
 
 async def help( ctx ):
@@ -377,7 +377,7 @@ async def help( ctx ):
 
     await ctx.send( embed = emb )
 
-@client.command()
+@Bot.command()
 async def roles(ctx, role: discord.Role = None):
     if not role:
         description = f''
@@ -390,7 +390,7 @@ async def roles(ctx, role: discord.Role = None):
 
 
 # временная роль
-@client.command()
+@Bot.command()
 @commands.has_permissions(administrator = True)
 async def temp_add_role(ctx, amount : int, member: discord.Member = None, role: discord.Role = None):
 
@@ -419,7 +419,7 @@ ev_player = [''] #игроки в розыгрыше
 start_ev = 0 #перемычка
 
 # розыгрыш ролей
-@client.command()
+@Bot.command()
 async def event_roles(stx, role: discord.Role = None, member: discord.Member = None):
     global ev_player
     global start_ev
@@ -438,7 +438,7 @@ async def event_roles(stx, role: discord.Role = None, member: discord.Member = N
     ev_player = ['']
     start_ev = 0
 
-@client.command()
+@Bot.command()
 async def mp(stx):
     global ev_player
     global start_ev
@@ -456,7 +456,7 @@ async def mp(stx):
         print('Розыгрыш роли завершен.')
 
 # предложение пользователей
-@client.command( pass_context = True, aliases = [ "Предложить", "предложить", "предложка", "Предложка", "Suggest" ])
+@Bot.command( pass_context = True, aliases = [ "Предложить", "предложить", "предложка", "Предложка", "Suggest" ])
 
 async def suggest( ctx , * , agr ):
     suggest_chanell = client.get_channel( 709699128803721309 ) #Айди канала предложки
@@ -469,7 +469,7 @@ async def suggest( ctx , * , agr ):
     await message.add_reaction('❎')
 
 
-@client.command()
+@Bot.command()
 async def dice(ctx, od: int = None, ot: int = None):
     if od and ot:
         b = random.randint(od, ot)
@@ -487,7 +487,7 @@ async def dice_error(ctx, error):
         await ctx.send(embed = discord.Embed(description = f'Ошибка, вы неправильно указали номера!'))
 
 #Застрелить
-@client.command()
+@Bot.command()
 async def kill(  ctx, member: discord.Member ):
     await ctx.send( f"{ctx.author.mention} Достает дробовик... \n https://tenor.com/view/eyebrow-raise-smile-prepared-ready-loaded-gif-15793001" )
     await asyncio.sleep( 3 )
@@ -542,7 +542,7 @@ async def play(ctx, url : str):
     await ctx.send(f'Сейчас проигрывает музыка: {song_name[0]}')
 
 
-@client.command()
+@Bot.command()
 async def join(ctx):
     global voice
     channel = ctx.message.author.voice.channel
@@ -552,7 +552,7 @@ async def join(ctx):
     else:
         voice = await channel.connect()
 
-@client.command()
+@Bot.command()
 async def leave(ctx):
     channel = ctx.message.author.voice.channel
     voice = get(client.voice_clients, guild=ctx.guild)
@@ -561,7 +561,7 @@ async def leave(ctx):
     else:
         voice = await channel.connect()
 
-@client.command() # Декоратор команды
+@Bot.command() # Декоратор команды
 async def avatar(ctx, member : discord.Member = None): # Название команды и аргументы
     user = ctx.message.author if member == None else member # 
     emb = discord.Embed( 
@@ -573,7 +573,7 @@ async def avatar(ctx, member : discord.Member = None): # Название ком
     await ctx.send(embed=emb)
 
 
-@client.command(pass_context=True)
+@Bot.command(pass_context=True)
 async def profile(ctx):
     roles = ctx.author.roles
     role_list = ""
@@ -598,7 +598,7 @@ async def profile(ctx):
 
 
 #Инфо о боте
-@client.command()
+@Bot.command()
 async def botinfo(ctx, member: discord.Member = None):
     if not member:
         member = ctx.author
@@ -614,30 +614,30 @@ async def botinfo(ctx, member: discord.Member = None):
 
     await ctx.send(embed=embed)
 
-@client.command()
+@Bot.command()
 async def google(ctx, *, question): # погуглить
     # сам сайт
     url = 'https://google.gik-team.com/?q=' + str(question).replace(' ', '+')
     await ctx.send(f'Так как кое кто не умеет гуглить, я сделал это за него.\n{url}')
 
-@client.command(pass_context = True,alieses=['вики']) #!wiki 
+@Bot.command(pass_context = True,alieses=['вики']) #!wiki 
 async def wiki( ctx, *, amount: str):
     if not amount:
         await ctx.send("Пожалуйста, используйте такую констркуцию: `!wiki [wiki запрос]`")
     a = '_'.join(amount.split())
     await ctx.send(f'https://ru.wikipedia.org/wiki/{a}')
 
-@client.command()
+@Bot.command()
 async def ямузыка(ctx, *, question):
     url = "https://music.yandex.ru/search?text=" + str(question).replace(" ", "%20")
     await ctx.send(f"Музыку захотел послушать? ок лови\n{url}")
 
-@client.command()
+@Bot.command()
 async def зайцы(ctx, *, question):
     url = "https://zaycev.net/search.html?query_search=" + str(question).replace(" ", "+")
     await ctx.send(f"Музыку захотел послушать? ок лови\n{url}")
 
-@client.command()
+@Bot.command()
 async def кино(ctx, *, question):
     url = "https://kinopoisk.ru/index.php?kp_query" + str(question).replace(" ", "+")
     await ctx.send(f"Кино? Ок\n{url}")
@@ -648,13 +648,13 @@ def random_meme():
     picked_meme = random.choice(memes)
     return picked_meme
 
-@client.command()
+@Bot.command()
 async def meme(ctx):
     emb = discord.Embed(description = 'Вот подобраный мем.', color = 0x00ffff)
     emb.set_image(url = random_meme())
     await ctx.send(embed=emb)
 
-@client.command()
+@Bot.command()
 async def status(ctx):
     r = (0xcc29a9, 0x0c0c0c, 0x004B3EE1, 0x00C8E14B, 0x00E15239, 0x00E116D3, 0x002CE141, 0x0023C5E1, 0x00E116E1)
     rd = random.choice(r)
