@@ -24,8 +24,8 @@ import urllib.request
 
 PREFIX = '!'
 
-client = commands.Bot(command_prefix = PREFIX )
-client.remove_command( 'help' )
+Bot = commands.Bot(command_prefix = PREFIX )
+Bot.remove_command( 'help' )
 
 
 @Bot.event
