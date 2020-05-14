@@ -500,7 +500,7 @@ async def kill(  ctx, member: discord.Member ):
     await ctx.send( f"{member.mention} погиб..." )
 
 
-@client.command()
+@Bot.command()
 async def play(ctx, url : str):
     song_there = os.path.isfile('song.mp3')
 
@@ -662,6 +662,6 @@ async def status(ctx):
     await ctx.send(embed=emb)
     print("1")
 
-token = os.environ.get("BOT_TOKEN")
+token = os.environ.get('BOT_TOKEN')
 
 bot.run(str(token))
